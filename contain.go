@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"syscall"
-
 	"github.com/docker/docker/pkg/reexec"
 )
 
@@ -17,19 +16,24 @@ func init() {
 	}
 }
 
+// func extractFS() error {
+// 	cmd := exec.Command("tar", "-x", "/assets/bionic-server-cloudimg-i386-root.tar.xz")
+// 	err := cmd.Run()
+// 	return err
+// }
+
 func nsInitialisation() {
 	newrootPath := os.Args[1]
 
-	if err := mountProc(newrootPath); err != nil {
-		fmt.Printf("Error mounting /proc - %s\n", err)
-		os.Exit(1)
-	}
+	// if err := mountProc(newrootPath); err != nil {
+	// 	fmt.Printf("Error mounting /proc - %s\n", err)
+	// 	os.Exit(1)
+	// }
 
 	if err := pivotRoot(newrootPath); err != nil {
 		fmt.Printf("Error running pivot_root - %s\n", err)
 		os.Exit(1)
 	}
-
 
 	nsRun()
 }
@@ -50,6 +54,11 @@ func nsRun() {
 }
 
 func main() {
+	// if err := extractFS(); err != nil{
+	// 	fmt.Printf("Couldn't extract file system " + err.Error())
+	// 	os.Exit(1)
+	// }
+
 	var rootfsPath string
 	flag.StringVar(&rootfsPath, "rootfs", "/tmp/ns-process/rootfs", "Path to the root filesystem to use")
 	flag.Parse()
