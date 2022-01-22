@@ -30,15 +30,6 @@ func nsInitialisation() {
 		os.Exit(1)
 	}
 
-	// if err := syscall.Sethostname([]byte("ns-process")); err != nil {
-	// 	fmt.Printf("Error setting hostname - %s\n", err)
-	// 	os.Exit(1)
-	// }
-
-	// if err := waitForNetwork(); err != nil {
-	// 	fmt.Printf("Error waiting for network - %s\n", err)
-	// 	os.Exit(1)
-	// }
 
 	nsRun()
 }
@@ -61,7 +52,6 @@ func nsRun() {
 func main() {
 	var rootfsPath string
 	flag.StringVar(&rootfsPath, "rootfs", "/tmp/ns-process/rootfs", "Path to the root filesystem to use")
-	// flag.StringVar(&netsetgoPath, "netsetgo", "/usr/local/bin/netsetgo", "Path to the netsetgo binary")
 	flag.Parse()
 	if err := syscall.Mkdir(rootfsPath, 0700); err != nil{
 		if(err.Error() == "file exists"){
@@ -71,8 +61,6 @@ func main() {
 			os.Exit(1)
 		}
 	}
-	// exitIfRootfsNotFound(rootfsPath)
-	// exitIfNetsetgoNotFound(netsetgoPath)
 
 	cmd := reexec.Command("nsInitialisation", rootfsPath)
 
@@ -108,14 +96,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	// run netsetgo using default args
-	// note that netsetgo must be owned by root with the setuid bit set
-	// pid := fmt.Sprintf("%d", cmd.Process.Pid)
-	// netsetgoCmd := exec.Command(netsetgoPath, "-pid", pid)
-	// if err := netsetgoCmd.Run(); err != nil {
-	// 	fmt.Printf("Error running netsetgo - %s\n", err)
-	// 	os.Exit(1)
-	// }
 
 	if err := cmd.Wait(); err != nil {
 		fmt.Printf("Error waiting for the reexec.Command - %s\n", err)
